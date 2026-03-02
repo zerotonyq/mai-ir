@@ -1,0 +1,39 @@
+db:
+  uri: "mongodb://admin:password@mongo:27017/?authSource=admin"
+  database: "infosearch"
+  pages_collection: "pages"
+  queue_collection: "queue"
+
+logic:
+  delay_ms: 1000
+  revisit_seconds: 86400
+  revisit_scan_seconds: 300
+  user_agent: "infosearch-crawler/1.0"
+  request_timeout_seconds: 20
+  follow_links: true
+  max_depth: 2
+  max_links_per_page: 50
+  articles_only: true
+  allow_domains:
+    - "ru.wikipedia.org"
+    - "habr.com"
+  deny_exts:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".gif"
+    - ".webp"
+    - ".svg"
+    - ".pdf"
+    - ".mp4"
+    - ".webm"
+    - ".css"
+    - ".js"
+
+sources:
+  - name: "wikipedia"
+    urls:
+      - "https://ru.wikipedia.org/wiki/"
+  - name: "habr"
+    urls:
+      - "https://habr.com/ru/articles/"

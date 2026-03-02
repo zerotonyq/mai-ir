@@ -1,0 +1,94 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+# креды от web = admin pass
+  mongo-express:
+    image: mongo-express:1
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/?authSource=admin
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  crawler:
+    build:
+      context: ./task_2
+    container_name: crawler
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./task_2/config.yaml:/app/config.yaml:ro
+
+  tokenize:
+    build:
+      context: ./task_3
+    container_name: tokenize
+    volumes:
+      - ./task_1/data/parsed:/data:ro
+      - ./task_3/output:/out
+    environment:
+      STRIP_HTML: "1"
+      FIT_MANDELBROT: "1"
+
+  indexer:
+    build:
+      context: ./task_4
+    container_name: indexer
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./task_4/output:/out
+    environment:
+      MONGO_URI: mongodb://admin:password@mongo:27017/?authSource=admin
+      DB_NAME: infosearch
+      COLLECTION: articles
+      OUT_DIR: /out
+      LIMIT: "0"
+    profiles: ["tools"]
+
+  web:
+    build:
+      context: ./task_5
+    container_name: web
+    volumes:
+      - ./task_4/output:/index:ro
+    ports:
+      - "8080:8080"
+    command: ["-c", "/app/build/ir_web --index /index/index.tsv --docs /index/docs.tsv --port 8080"]
+
+  cli:
+    build:
+      context: ./task_5
+    container_name: cli
+    volumes:
+      - ./task_4/output:/index:ro
+    environment:
+      QUERY: "(linux or windows) and not python"
+    command: ["-c", "/app/build/ir_cli --index /index/index.tsv --docs /index/docs.tsv --query \"$QUERY\""]
+    profiles: ["tools"]
+
+volumes:
+  mongo_data:

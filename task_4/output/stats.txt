@@ -1,0 +1,7 @@
+Docs: 19960
+Terms: 383124
+Tokens: 20239398
+AvgTokenLen: 9.67750
+InputKB: 144089.322
+Elapsed: 20.81593
+SpeedKBps: 6922.069
