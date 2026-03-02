@@ -4,12 +4,12 @@
 
 ## Структура репозитория
 
-- `task_1` — скрапинг статей, подготовка JSONL и загрузка в MongoDB.
-- `task_2` — краулер (C, libcurl + MongoDB C driver).
-- `task_3` — токенизация и закон Ципфа (C + Python график).
-- `task_4` — индексатор (C++ без STL, вход из MongoDB).
-- `task_5` — поиск (CLI + WEB-интерфейс, C++ без STL).
-- `task_6` — LaTeX отчёт и графики.
+- `task_1` - скрапинг статей, подготовка JSONL и загрузка в MongoDB.
+- `task_2` - краулер (C, libcurl + MongoDB C driver).
+- `task_3` - токенизация и закон Ципфа (C + Python график).
+- `task_4` - индексатор (C++ без STL, вход из MongoDB).
+- `task_5` - поиск (CLI + WEB-интерфейс, C++ без STL).
+- `task_6` - LaTeX отчёт и графики.
 
 ## Быстрый старт (Docker)
 
@@ -87,7 +87,7 @@ docker compose up web
 
 ## Полезные файлы
 
-- `docker-compose.yml` — конфигурация сервисов и маршруты индекса.
-- `.env` — учётные данные MongoDB (по умолчанию `admin/password`).
-- `task_4/README.md` — детали индексатора.
-- `task_5/README.md` — детали CLI и WEB поиска.
+- `docker-compose.yml` - конфигурация сервисов и маршруты индекса.
+- `.env` - учётные данные MongoDB (по умолчанию `admin/password`).
+- `task_4/README.md` - детали индексатора.
+- `task_5/README.md` - детали CLI и WEB поиска.
